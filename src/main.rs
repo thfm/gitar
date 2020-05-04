@@ -1,7 +1,7 @@
 use gitar::{standard_tuning, Guitar, Note};
 use structopt::StructOpt;
 
-#[derive(Debug, StructOpt)]
+#[derive(StructOpt)]
 enum Opt {
     /// Finds the occurences of the given note on a guitar.
     Find {
@@ -25,17 +25,17 @@ fn main() -> anyhow::Result<()> {
         } => {
             // Uses standard tuning if there was no given tuning (or if the given
             // tuning was invalid)
-            let tuning = tuning.unwrap_or(standard_tuning());
+            let tuning = tuning.unwrap_or_else(standard_tuning);
 
             let guitar = Guitar::new(num_frets, tuning);
 
             let locations = guitar.locations(note);
-            if locations.len() > 0 {
+            if locations.is_empty() {
+                println!("No occurences.");
+            } else {
                 for fretboard_location in locations {
                     println!("{}", fretboard_location);
                 }
-            } else {
-                println!("No occurences.");
             }
         }
     }
