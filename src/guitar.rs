@@ -19,6 +19,7 @@ impl Guitar {
     ///
     /// ```rust
     /// use gitar::{Guitar, Note, standard_tuning};
+    /// use std::str::FromStr;
     ///
     /// // Creates a guitar with standard tuning (probably an electric,
     /// // given the number of frets)
