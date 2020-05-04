@@ -38,6 +38,17 @@ impl FromStr for Note {
     }
 }
 
+#[cfg(test)]
+#[test]
+fn from_str() {
+    assert_eq!(Note::from_str("C0").unwrap(), Note(0));
+    assert_eq!(Note::from_str("Db3").unwrap(), Note(37));
+    assert_eq!(Note::from_str("Bb10").unwrap(), Note(130));
+    assert!(Note::from_str("Ab").is_err()); // No octave
+    assert!(Note::from_str("Cb2").is_err()); // Invalid note name
+    assert!(Note::from_str("Gb-2").is_err()); // Invalid octave
+}
+
 impl fmt::Display for Note {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let name = match self.0 % 12 {
@@ -59,6 +70,14 @@ impl fmt::Display for Note {
 
         write!(f, "{}{}", name, octave)
     }
+}
+
+#[cfg(test)]
+#[test]
+fn to_str() {
+    assert_eq!(Note(0).to_string(), "C0");
+    assert_eq!(Note(37).to_string(), "Db3");
+    assert_eq!(Note(76).to_string(), "E6");
 }
 
 impl IntoIterator for Note {
