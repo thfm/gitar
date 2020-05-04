@@ -1,7 +1,5 @@
-use {
-    crate::Note,
-    std::{fmt, str::FromStr},
-};
+use crate::Note;
+use std::{fmt, str::FromStr};
 
 /// A guitar with any number of strings.
 #[derive(Debug)]
@@ -90,12 +88,52 @@ pub fn standard_tuning() -> Vec<Note> {
     ]
 }
 
+pub struct FretboardDiagram<'g> {
+    guitar: &'g Guitar,
+    locations: Vec<FretboardLocation>,
+}
+
+impl<'g> FretboardDiagram<'g> {
+    pub fn new(guitar: &'g Guitar, locations: Vec<FretboardLocation>) -> Self {
+        Self { guitar, locations }
+    }
+}
+
+impl<'g> fmt::Display for FretboardDiagram<'g> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // The values can be unwrapped because the case in which there are no fretboard
+        // locations has already been handled (see the above `match` statement)
+        let fret_numbers = self.locations.iter().map(|loc| loc.fret_number);
+        let lowest_fret_num = fret_numbers.clone().min().unwrap();
+        let highest_fret_num = fret_numbers.max().unwrap();
+
+        // Draws a fretboard diagram showing all of the note locations
+        for fret_idx in lowest_fret_num..=highest_fret_num {
+            for string_num in (1..=self.guitar.strings.len()).rev() {
+                let current_loc = FretboardLocation::new(string_num, fret_idx);
+                if self.locations.contains(&current_loc) {
+                    f.write_str("∗")?;
+                } else if fret_idx == 0 {
+                    f.write_str("-")?;
+                } else {
+                    f.write_str("│")?;
+                }
+            }
+
+            writeln!(f, " {}", fret_idx)?;
+        }
+
+        Ok(())
+    }
+}
+
 /// A location on a fretboard.
 ///
 /// A `fret_number` of 0 indicates an open string.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct FretboardLocation {
-    string_number: usize,
-    fret_number: usize,
+    pub string_number: usize,
+    pub fret_number: usize,
 }
 
 impl FretboardLocation {
@@ -103,20 +141,6 @@ impl FretboardLocation {
         Self {
             string_number,
             fret_number,
-        }
-    }
-}
-
-impl fmt::Display for FretboardLocation {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        if self.fret_number > 0 {
-            write!(
-                f,
-                "String {}, fret {}",
-                self.string_number, self.fret_number
-            )
-        } else {
-            write!(f, "Open {} string", self.string_number)
         }
     }
 }

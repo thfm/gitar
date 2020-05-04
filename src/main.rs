@@ -1,4 +1,4 @@
-use gitar::{standard_tuning, Guitar, Note};
+use gitar::{standard_tuning, FretboardDiagram, Guitar, Note};
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -30,13 +30,16 @@ fn main() -> anyhow::Result<()> {
             let guitar = Guitar::new(num_frets, tuning);
 
             let locations = guitar.locations(note);
-            if locations.is_empty() {
-                println!("No occurences.");
-            } else {
-                for fretboard_location in locations {
-                    println!("{}", fretboard_location);
+            match locations.len() {
+                0 => {
+                    println!("No occurences.");
+                    return Ok(());
                 }
+                1 => println!("1 occurence:"),
+                n => println!("{} occurences:", n),
             }
+
+            println!("{}", FretboardDiagram::new(&guitar, locations));
         }
     }
 
