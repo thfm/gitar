@@ -38,23 +38,38 @@ The `find` command is for finding the different fretboard locations of a note. F
 $ gitar find E4
 ```
 
-produces the following output:
+produces a fretboard diagram that looks like this:
 
 ```console
-Open 1 string
-String 2, fret 5
-String 3, fret 9
-String 4, fret 14
-String 5, fret 19
+5 occurences:
+-----∗ 0
+││││││ 1
+││││││ 2
+││││││ 3
+││││││ 4
+││││∗│ 5
+││││││ 6
+││││││ 7
+││││││ 8
+│││∗││ 9
+││││││ 10
+││││││ 11
+││││││ 12
+││││││ 13
+││∗│││ 14
+││││││ 15
+││││││ 16
+││││││ 17
+││││││ 18
+│∗││││ 19
 ```
+
+Each fretboard location is  shown as a `∗`, with the numbers on the side indicating the fret number.
 
 If there are no occurences of the given note, the output will say as such:
 
 ```console
 $ gitar find Bb20
-```
-
-```console
 No occurences.
 ```
 
@@ -64,20 +79,16 @@ What if you want to find the locations of a certain note in a non-standard tunin
 
 ```console
 $ gitar find D2 --tuning D2 A2 D3 G3 B3 E4
-```
-
-```console
-Open 6 string
+1 occurence:
+∗----- 0
 ```
 
 You don't actually have to put in six values; in fact, you can type any number of notes, and the program will construct a guitar with that many strings. This means that you can use `find` for bass guitars as well, as is demonstrated below:
 
 ```console
 $ gitar find Gb1 --tuning E1 A1 D2 G2
-```
-
-```console
-String 4, fret 2
+1 occurence:
+∗│││ 2
 ```
 
 #### Changing the number of `frets`
@@ -92,21 +103,28 @@ This outputs `No occurences`, which is true for *most* guitars, except for those
 
 ```console
 $ gitar find E6 --frets 24
-```
-
-```console
-String 1, fret 24
+1 occurence:
+│││││∗ 24
 ```
 
 This option is also useful for when you want to simulate a guitar with less than the default number of frets (which, in this program, is 21):
 
 ```console
 $ gitar find F4 -f 18
-```
-
-```console
-String 1, fret 1
-String 2, fret 6
-String 3, fret 10
-String 4, fret 15
+4 occurences:
+│││││∗ 1
+││││││ 2
+││││││ 3
+││││││ 4
+││││││ 5
+││││∗│ 6
+││││││ 7
+││││││ 8
+││││││ 9
+│││∗││ 10
+││││││ 11
+││││││ 12
+││││││ 13
+││││││ 14
+││∗│││ 15
 ```
