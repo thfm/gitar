@@ -40,7 +40,7 @@ impl FromStr for Note {
             anyhow::anyhow!("failed to parse note name")
         })?;
 
-        let octave = usize::from_str(s)?;
+        let octave = if s.is_empty() { 0 } else { usize::from_str(s)? };
 
         Ok(Self::new(name + octave * 12))
     }
@@ -52,8 +52,8 @@ fn from_str() {
     assert_eq!(Note::from_str("C0").unwrap(), Note::new(0));
     assert_eq!(Note::from_str("Db3").unwrap(), Note::new(37));
     assert_eq!(Note::from_str("Bb10").unwrap(), Note::new(130));
+    assert_eq!(Note::from_str("Ab").unwrap(), Note::new(8));
 
-    assert!(Note::from_str("Ab").is_err());
     assert!(Note::from_str("Cb2").is_err());
     assert!(Note::from_str("Gb-2").is_err());
 }
