@@ -1,4 +1,4 @@
-use gitar::{standard_tuning, FretboardDiagram, Guitar, Note};
+use gitar::{standard_tuning, FretboardDiagram, Luthier, Note};
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -27,7 +27,8 @@ fn main() -> anyhow::Result<()> {
             // tuning was invalid)
             let tuning = tuning.unwrap_or_else(standard_tuning);
 
-            let guitar = Guitar::new(num_frets, tuning);
+            let luthier = Luthier::new(num_frets).string(tuning);
+            let guitar = luthier.build();
 
             let locations = guitar.locations(note);
             match locations.len() {

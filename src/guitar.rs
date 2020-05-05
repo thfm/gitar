@@ -1,48 +1,49 @@
 use crate::Note;
 use std::{fmt, str::FromStr};
 
+pub struct Luthier {
+    num_frets: usize,
+    strings: Vec<GuitarString>,
+}
+
+impl Luthier {
+    pub fn new(num_frets: usize) -> Self {
+        Self {
+            num_frets,
+            strings: Vec::new(),
+        }
+    }
+
+    pub fn string(mut self, tuning: Vec<Note>) -> Self {
+        self.strings = tuning
+            .iter()
+            .rev()
+            .map(|open_note| GuitarString::new(*open_note, self.num_frets))
+            .collect();
+        self
+    }
+
+    pub fn build(self) -> Guitar {
+        Guitar {
+            num_frets: self.num_frets,
+            strings: self.strings,
+        }
+    }
+}
+
 /// A guitar with any number of strings.
 #[derive(Debug)]
 pub struct Guitar {
-    pub strings: Vec<GuitarString>,
+    num_frets: usize,
+    strings: Vec<GuitarString>,
 }
 
 impl Guitar {
     /// Creates a new guitar.
-    ///
-    /// The number of strings is detemined by the length of the `tuning` vector,
-    /// which holds note values for each open string.
-    ///
-    /// # Examples
-    ///
-    /// ```rust
-    /// use gitar::{Guitar, Note, standard_tuning};
-    /// use std::str::FromStr;
-    ///
-    /// // Creates a guitar with standard tuning (probably an electric,
-    /// // given the number of frets)
-    /// let electric_guitar = Guitar::new(22, standard_tuning());
-    ///
-    /// // Open D tuning
-    /// let d_tuning = vec![
-    ///     Note::from_str("D2").unwrap(),
-    ///     Note::from_str("A2").unwrap(),
-    ///     Note::from_str("D3").unwrap(),
-    ///     Note::from_str("Gb3").unwrap(),
-    ///     Note::from_str("A3").unwrap(),
-    ///     Note::from_str("D4").unwrap(),
-    /// ];
-    ///
-    /// // Creates a guitar with the custom tuning
-    /// let acoustic_guitar = Guitar::new(20, d_tuning);
-    /// ```
-    pub fn new(num_frets: usize, tuning: Vec<Note>) -> Self {
+    pub fn new(num_frets: usize) -> Self {
         Self {
-            strings: tuning
-                .iter()
-                .rev()
-                .map(|open_note| GuitarString::new(*open_note, num_frets))
-                .collect(),
+            num_frets,
+            strings: Vec::new(),
         }
     }
 
