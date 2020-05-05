@@ -1,3 +1,4 @@
+use crate::Interval;
 use nom::{branch::alt, bytes::complete::tag, combinator::map};
 use std::{
     cmp::Ordering,
@@ -7,11 +8,13 @@ use std::{
 };
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
-pub struct Note(usize);
+pub struct Note {
+    value: usize,
+}
 
 impl Note {
     pub fn new(value: usize) -> Self {
-        Note(value)
+        Note { value }
     }
 }
 
@@ -46,9 +49,9 @@ impl FromStr for Note {
 #[cfg(test)]
 #[test]
 fn from_str() {
-    assert_eq!(Note::from_str("C0").unwrap(), Note(0));
-    assert_eq!(Note::from_str("Db3").unwrap(), Note(37));
-    assert_eq!(Note::from_str("Bb10").unwrap(), Note(130));
+    assert_eq!(Note::from_str("C0").unwrap(), Note::new(0));
+    assert_eq!(Note::from_str("Db3").unwrap(), Note::new(37));
+    assert_eq!(Note::from_str("Bb10").unwrap(), Note::new(130));
 
     assert!(Note::from_str("Ab").is_err());
     assert!(Note::from_str("Cb2").is_err());
@@ -57,7 +60,7 @@ fn from_str() {
 
 impl fmt::Display for Note {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let name = match self.0 % 12 {
+        let name = match self.value % 12 {
             0 => "C",
             1 => "Db",
             2 => "D",
@@ -72,7 +75,7 @@ impl fmt::Display for Note {
             11 => "B",
             _ => unreachable!(),
         };
-        let octave = self.0 / 12;
+        let octave = self.value / 12;
 
         write!(f, "{}{}", name, octave)
     }
@@ -81,16 +84,18 @@ impl fmt::Display for Note {
 #[cfg(test)]
 #[test]
 fn to_str() {
-    assert_eq!(Note(0).to_string(), "C0");
-    assert_eq!(Note(37).to_string(), "Db3");
-    assert_eq!(Note(76).to_string(), "E6");
+    assert_eq!(Note::new(0).to_string(), "C0");
+    assert_eq!(Note::new(37).to_string(), "Db3");
+    assert_eq!(Note::new(76).to_string(), "E6");
 }
 
 impl Add<Interval> for Note {
     type Output = Self;
 
     fn add(self, interval: Interval) -> Self::Output {
-        Self(self.0 + interval.0)
+        Self {
+            value: self.value + interval.semitones,
+        }
     }
 }
 
@@ -98,27 +103,29 @@ impl Sub<Interval> for Note {
     type Output = Self;
 
     fn sub(self, interval: Interval) -> Self::Output {
-        Self(self.0 - interval.0)
+        Self {
+            value: self.value - interval.semitones,
+        }
     }
 }
 
 #[cfg(test)]
 #[test]
 fn transpose() {
-    assert_eq!(Note(10) + Interval(5), Note(15));
-    assert_eq!(Note(42) + Interval(12), Note(54));
-    assert_eq!(Note(10) - Interval(5), Note(5));
-    assert_eq!(Note(42) - Interval(12), Note(30));
+    assert_eq!(Note::new(10) + Interval::new(5), Note::new(15));
+    assert_eq!(Note::new(42) + Interval::new(12), Note::new(54));
+    assert_eq!(Note::new(10) - Interval::new(5), Note::new(5));
+    assert_eq!(Note::new(42) - Interval::new(12), Note::new(30));
 }
 
 impl Sub for Note {
     type Output = Interval;
 
     fn sub(self, other: Self) -> Self::Output {
-        match self.0.cmp(&other.0) {
-            Ordering::Greater => Interval(self.0 - other.0),
-            Ordering::Less => Interval(other.0 - self.0),
-            Ordering::Equal => Interval(0),
+        match self.value.cmp(&other.value) {
+            Ordering::Greater => Interval::new(self.value - other.value),
+            Ordering::Less => Interval::new(other.value - self.value),
+            Ordering::Equal => Interval::new(0),
         }
     }
 }
@@ -126,9 +133,9 @@ impl Sub for Note {
 #[cfg(test)]
 #[test]
 fn interval() {
-    assert_eq!(Note(10) - Note(5), Interval(5));
-    assert_eq!(Note(21) - Note(27), Interval(6));
-    assert_eq!(Note(37) - Note(37), Interval(0));
+    assert_eq!(Note::new(10) - Note::new(5), Interval::new(5));
+    assert_eq!(Note::new(21) - Note::new(27), Interval::new(6));
+    assert_eq!(Note::new(37) - Note::new(37), Interval::new(0));
 }
 
 impl IntoIterator for Note {
@@ -157,17 +164,8 @@ impl Iterator for NoteIter {
             self.first = false;
             Some(self.note)
         } else {
-            self.note.0 += 1;
+            self.note.value += 1;
             Some(self.note)
         }
-    }
-}
-
-#[derive(Debug, Eq, PartialEq)]
-pub struct Interval(usize);
-
-impl Interval {
-    pub fn new(semitones: usize) -> Self {
-        Self(semitones)
     }
 }
