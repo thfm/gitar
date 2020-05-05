@@ -1,5 +1,10 @@
 use nom::{branch::alt, bytes::complete::tag, combinator::map};
-use std::{fmt, str::FromStr};
+use std::{
+    cmp::Ordering,
+    fmt,
+    ops::{Add, Sub},
+    str::FromStr,
+};
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
 pub struct Note(u32);
@@ -80,6 +85,51 @@ fn to_str() {
     assert_eq!(Note(76).to_string(), "E6");
 }
 
+impl Add<Interval> for Note {
+    type Output = Self;
+
+    fn add(self, interval: Interval) -> Self::Output {
+        Self(self.0 + interval.0)
+    }
+}
+
+impl Sub<Interval> for Note {
+    type Output = Self;
+
+    fn sub(self, interval: Interval) -> Self::Output {
+        Self(self.0 - interval.0)
+    }
+}
+
+#[cfg(test)]
+#[test]
+fn transpose() {
+    assert_eq!(Note(10) + Interval(5), Note(15));
+    assert_eq!(Note(42) + Interval(12), Note(54));
+    assert_eq!(Note(10) - Interval(5), Note(5));
+    assert_eq!(Note(42) - Interval(12), Note(30));
+}
+
+impl Sub for Note {
+    type Output = Interval;
+
+    fn sub(self, other: Self) -> Self::Output {
+        match self.0.cmp(&other.0) {
+            Ordering::Greater => Interval(self.0 - other.0),
+            Ordering::Less => Interval(other.0 - self.0),
+            Ordering::Equal => Interval(0),
+        }
+    }
+}
+
+#[cfg(test)]
+#[test]
+fn interval() {
+    assert_eq!(Note(10) - Note(5), Interval(5));
+    assert_eq!(Note(21) - Note(27), Interval(6));
+    assert_eq!(Note(37) - Note(37), Interval(0));
+}
+
 impl IntoIterator for Note {
     type Item = Self;
     type IntoIter = NoteIter;
@@ -109,5 +159,14 @@ impl Iterator for NoteIter {
             self.note.0 += 1;
             Some(self.note)
         }
+    }
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub struct Interval(u32);
+
+impl Interval {
+    pub fn new(semitones: u32) -> Self {
+        Self(semitones)
     }
 }
