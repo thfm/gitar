@@ -1,8 +1,9 @@
-use crate::Note;
+use crate::{Interval, Note};
 use std::{fmt, str::FromStr};
 
 pub struct Luthier {
     num_frets: usize,
+    tuning: Vec<Note>,
     strings: Vec<GuitarString>,
 }
 
@@ -10,15 +11,39 @@ impl Luthier {
     pub fn new(num_frets: usize) -> Self {
         Self {
             num_frets,
+            tuning: Vec::new(),
             strings: Vec::new(),
         }
     }
 
     pub fn string(mut self, tuning: Vec<Note>) -> Self {
-        self.strings = tuning
+        self.tuning = tuning;
+        self.strings = self
+            .tuning
             .iter()
             .rev()
             .map(|open_note| GuitarString::new(*open_note, self.num_frets))
+            .collect();
+        self
+    }
+
+    pub fn add_capo(mut self, fret_number: usize) -> Self {
+        if fret_number > self.num_frets {
+            panic!("the capo fret number exceeded the number of frets on the guitar");
+        }
+
+        if self.tuning.is_empty() {
+            panic!("the guitar must be strung before a capo is added");
+        }
+
+        self.num_frets -= fret_number;
+        self.strings = self
+            .tuning
+            .iter()
+            .rev()
+            .map(|open_note| {
+                GuitarString::new(*open_note + Interval::new(fret_number), self.num_frets)
+            })
             .collect();
         self
     }

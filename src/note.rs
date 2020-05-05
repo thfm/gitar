@@ -7,10 +7,10 @@ use std::{
 };
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
-pub struct Note(u32);
+pub struct Note(usize);
 
 impl Note {
-    pub fn new(value: u32) -> Self {
+    pub fn new(value: usize) -> Self {
         Note(value)
     }
 }
@@ -37,7 +37,7 @@ impl FromStr for Note {
             anyhow::anyhow!("failed to parse note name")
         })?;
 
-        let octave = u32::from_str(s)?;
+        let octave = usize::from_str(s)?;
 
         Ok(Self::new(name + octave * 12))
     }
@@ -49,9 +49,10 @@ fn from_str() {
     assert_eq!(Note::from_str("C0").unwrap(), Note(0));
     assert_eq!(Note::from_str("Db3").unwrap(), Note(37));
     assert_eq!(Note::from_str("Bb10").unwrap(), Note(130));
-    assert!(Note::from_str("Ab").is_err()); // No octave
-    assert!(Note::from_str("Cb2").is_err()); // Invalid note name
-    assert!(Note::from_str("Gb-2").is_err()); // Invalid octave
+
+    assert!(Note::from_str("Ab").is_err());
+    assert!(Note::from_str("Cb2").is_err());
+    assert!(Note::from_str("Gb-2").is_err());
 }
 
 impl fmt::Display for Note {
@@ -163,10 +164,10 @@ impl Iterator for NoteIter {
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub struct Interval(u32);
+pub struct Interval(usize);
 
 impl Interval {
-    pub fn new(semitones: u32) -> Self {
+    pub fn new(semitones: usize) -> Self {
         Self(semitones)
     }
 }

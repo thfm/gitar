@@ -9,9 +9,12 @@ enum Opt {
         /// The number of frets on the guitar.
         #[structopt(short = "f", long = "frets", default_value = "21")]
         num_frets: usize,
-        /// The tuning configuration of the guitar.
+        /// A tuning configuration for the guitar.
         #[structopt(short = "t", long = "tuning")]
         tuning: Option<Vec<Note>>,
+        /// The fret number of a capo.
+        #[structopt(short = "c", long = "capo")]
+        capo: Option<usize>,
     },
 }
 
@@ -22,12 +25,15 @@ fn main() -> anyhow::Result<()> {
             note,
             num_frets,
             tuning,
+            capo,
         } => {
             // Uses standard tuning if there was no given tuning (or if the given
             // tuning was invalid)
             let tuning = tuning.unwrap_or_else(standard_tuning);
 
-            let luthier = Luthier::new(num_frets).string(tuning);
+            let capo = capo.unwrap_or(0);
+
+            let luthier = Luthier::new(num_frets).string(tuning).add_capo(capo);
             let guitar = luthier.build();
 
             let locations = guitar.locations(note);

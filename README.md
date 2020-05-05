@@ -91,6 +91,18 @@ $ gitar find Gb1 --tuning E1 A1 D2 G2
 ∗│││ 2
 ```
 
+
+#### Adding a `capo`
+
+You can add a capo by specifying the fret that you want it to be placed on after the `capo` option:
+
+```console:
+$ gitar find F2 --capo 1
+∗----- 0
+```
+
+Note that the fret numbering will change to treat the capo as if it were the nut.
+
 #### Changing the number of `frets`
 
 Finally, you may encounter a scenario where the output of `find` is different from what you expect. Take the following, for example:
