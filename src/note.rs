@@ -111,7 +111,7 @@ impl Sub<Interval> for Note {
 
 #[cfg(test)]
 #[test]
-fn transpose() {
+fn transposition() {
     assert_eq!(Note::new(10) + Interval::new(5), Note::new(15));
     assert_eq!(Note::new(42) + Interval::new(12), Note::new(54));
     assert_eq!(Note::new(10) - Interval::new(5), Note::new(5));
@@ -132,7 +132,7 @@ impl Sub for Note {
 
 #[cfg(test)]
 #[test]
-fn interval() {
+fn interval_calculation() {
     assert_eq!(Note::new(10) - Note::new(5), Interval::new(5));
     assert_eq!(Note::new(21) - Note::new(27), Interval::new(6));
     assert_eq!(Note::new(37) - Note::new(37), Interval::new(0));
