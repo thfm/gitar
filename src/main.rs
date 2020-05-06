@@ -20,7 +20,8 @@ enum Opt {
     Notes {
         /// The root (starting) note of the key.
         root_note: Note,
-        mode: Mode,
+        #[structopt(short = "m", long = "mode")]
+        mode: Option<Mode>,
     },
 }
 
@@ -55,6 +56,7 @@ fn main() -> anyhow::Result<()> {
             println!("{}", FretboardDiagram::new(&guitar, locations));
         }
         Opt::Notes { root_note, mode } => {
+            let mode = mode.unwrap_or(Mode::Ionian);
             let key = Key::new(root_note, mode);
             println!("{}", key);
         }
