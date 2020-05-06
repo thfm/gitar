@@ -1,5 +1,6 @@
 use crate::{Interval, Note, SEMITONE, TONE};
 use arrayvec::ArrayVec;
+use std::fmt;
 
 pub struct Key {
     notes: [Note; 7],
@@ -22,7 +23,7 @@ impl Key {
 
 #[cfg(test)]
 #[test]
-fn key_construction() {
+fn construction() {
     assert_eq!(
         Key::new(Note::new(0), Mode::Ionian).notes,
         [
@@ -47,6 +48,38 @@ fn key_construction() {
             Note::new(11),
             Note::new(13)
         ]
+    );
+}
+
+impl fmt::Display for Key {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let num_notes = self.notes.len();
+        for (i, note) in self.notes.iter().enumerate() {
+            write!(f, "{:#}", note)?;
+            // Only prints a space if this is not the final note
+            // (to avoid having a trailing space)
+            if i != num_notes - 1 {
+                f.write_str(" ")?;
+            }
+        }
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+#[test]
+fn display() {
+    // D Dorian
+    assert_eq!(
+        Key::new(Note::new(2), Mode::Dorian).to_string(),
+        "D E F G A B C"
+    );
+
+    // Ab Mixolydian
+    assert_eq!(
+        Key::new(Note::new(8), Mode::Mixolydian).to_string(),
+        "Ab Bb C D Eb F G"
     );
 }
 

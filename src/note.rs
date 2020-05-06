@@ -48,7 +48,7 @@ impl FromStr for Note {
 
 #[cfg(test)]
 #[test]
-fn from_str() {
+fn parsing() {
     assert_eq!(Note::from_str("C0").unwrap(), Note::new(0));
     assert_eq!(Note::from_str("Db3").unwrap(), Note::new(37));
     assert_eq!(Note::from_str("Bb10").unwrap(), Note::new(130));
@@ -75,18 +75,33 @@ impl fmt::Display for Note {
             11 => "B",
             _ => unreachable!(),
         };
-        let octave = self.value / 12;
 
-        write!(f, "{}{}", name, octave)
+        if f.alternate() {
+            write!(f, "{}", name)
+        } else {
+            let octave = self.value / 12;
+            write!(f, "{}{}", name, octave)
+        }
     }
 }
 
 #[cfg(test)]
-#[test]
-fn to_str() {
-    assert_eq!(Note::new(0).to_string(), "C0");
-    assert_eq!(Note::new(37).to_string(), "Db3");
-    assert_eq!(Note::new(76).to_string(), "E6");
+mod display_tests {
+    use super::*;
+
+    #[test]
+    fn normal() {
+        assert_eq!(Note::new(0).to_string(), "C0");
+        assert_eq!(Note::new(37).to_string(), "Db3");
+        assert_eq!(Note::new(76).to_string(), "E6");
+    }
+
+    #[test]
+    fn alternate() {
+        assert_eq!(format!("{:#}", Note::new(0)), "C");
+        assert_eq!(format!("{:#}", Note::new(37)), "Db");
+        assert_eq!(format!("{:#}", Note::new(76)), "E");
+    }
 }
 
 impl Add<Interval> for Note {
