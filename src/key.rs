@@ -1,6 +1,7 @@
 use crate::{Interval, Note, SEMITONE, TONE};
 use arrayvec::ArrayVec;
 use std::fmt;
+use strum_macros::EnumString;
 
 pub struct Key {
     notes: [Note; 7],
@@ -83,6 +84,7 @@ fn display() {
     );
 }
 
+#[derive(EnumString)]
 pub enum Mode {
     Ionian,
     Dorian,
