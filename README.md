@@ -18,19 +18,19 @@ $ cargo install --path . --force
 
 Currently, `gitar` only has one command (`find`); but functionality for note input will likely be the same for future commands as well. Thus, it is covered here once for convenience.
 
-When inputting notes, you must supply a *name* and an *octave number*:
+You only need to supply a name when inputting notes, but can optionally specify an octave number as well (the default for which is 0):
 
 * note names must be one of the following (case-sensitive): `C`, `Db`, `D`, `Eb`, `E`, `F`, `Gb`, `G`, `Ab`, `A`, `Bb`, `B`
 
-* and the octave number is simply any positive whole number
+* and octave numbers are simply any positive whole number
 
-Examples of valid note inputs are `F5`, `Ab0`, and `C10`.
+Examples of valid note inputs are `C`, `F`, `Ab0`, and `B10`.
 
-Examples of *invalid* note inputs are `D#3`, `Eb`, and `A-10`.
+Examples of *invalid* note inputs are `D#3` and `A-10`.
 
-## Command usage
+## Command usages
 
-### `Find`
+### `find`
 
 The `find` command is for finding the different fretboard locations of a note. For example,
 
@@ -139,4 +139,20 @@ $ gitar find F4 -f 18
 ││││││ 13
 ││││││ 14
 ││∗│││ 15
+```
+
+### `notes`
+
+The `notes` command outputs the notes in a given key. You use it like this:
+
+```console
+$ gitar notes C
+C D E F G A B
+```
+
+The default mode is ionian, but you can easily change that using the `mode` option:
+
+```console
+$ gitar notes Eb --mode Aeolian
+Eb F Gb Ab Bb B Db
 ```
