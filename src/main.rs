@@ -1,4 +1,4 @@
-use gitar::{standard_tuning, FretboardDiagram, Luthier, Note};
+use gitar::{standard_tuning, FretboardDiagram, Key, Luthier, Mode, Note};
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -16,6 +16,8 @@ enum Opt {
         #[structopt(short = "c", long = "capo")]
         capo: Option<usize>,
     },
+    /// Prints the notes in the given key.
+    Notes { key_root_note: Note, mode: Mode },
 }
 
 fn main() -> anyhow::Result<()> {
@@ -47,6 +49,13 @@ fn main() -> anyhow::Result<()> {
             }
 
             println!("{}", FretboardDiagram::new(&guitar, locations));
+        }
+        Opt::Notes {
+            key_root_note,
+            mode,
+        } => {
+            let key = Key::new(key_root_note, mode);
+            println!("{}", key);
         }
     }
 
