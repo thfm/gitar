@@ -25,6 +25,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "arrayvec"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cff77d8686867eceff3105329d4698d96c2391c176d5d03adc90c7389162b5b8"
+
+[[package]]
 name = "atty"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -67,6 +73,7 @@ name = "gitar"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "arrayvec 0.5.1",
  "nom",
  "structopt",
 ]
@@ -101,7 +108,7 @@ version = "0.6.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f86d66d380c9c5a685aaac7a11818bdfa1f733198dfd9ec09c70b762cd12ad6f"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.4.12",
  "bitflags",
  "cfg-if",
  "rustc_version",
