@@ -63,6 +63,23 @@ fn construction() {
     );
 }
 
+#[cfg(test)]
+#[test]
+fn octave_disregard() {
+    assert_eq!(
+        Key::new(Note::new(5), Mode::Ionian).notes_disregarding_octave(),
+        [
+            Note::new(5),
+            Note::new(7),
+            Note::new(9),
+            Note::new(10),
+            Note::new(0),
+            Note::new(2),
+            Note::new(4)
+        ]
+    );
+}
+
 impl fmt::Display for Key {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if f.alternate() {
@@ -84,19 +101,30 @@ impl fmt::Display for Key {
 }
 
 #[cfg(test)]
-#[test]
-fn display() {
-    // D Dorian
-    assert_eq!(
-        Key::new(Note::new(2), Mode::Dorian).to_string(),
-        "D E F G A B C"
-    );
+mod display_tests {
+    use super::*;
 
-    // Ab Mixolydian
-    assert_eq!(
-        Key::new(Note::new(8), Mode::Mixolydian).to_string(),
-        "Ab Bb C D Eb F G"
-    );
+    #[test]
+    fn normal() {
+        assert_eq!(Key::new(Note::new(2), Mode::Dorian).to_string(), "D Dorian");
+        assert_eq!(
+            Key::new(Note::new(8), Mode::Mixolydian).to_string(),
+            "Ab Mixolydian"
+        );
+    }
+
+    #[test]
+    fn alternate() {
+        assert_eq!(
+            format!("{:#}", Key::new(Note::new(2), Mode::Dorian)),
+            "D E F G A B C"
+        );
+
+        assert_eq!(
+            format!("{:#}", Key::new(Note::new(8), Mode::Mixolydian)),
+            "Ab Bb C D Eb F G"
+        );
+    }
 }
 
 pub fn guess_key(notes: Vec<Note>, root_note: Option<Note>) -> Vec<Key> {
