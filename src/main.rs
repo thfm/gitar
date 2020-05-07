@@ -1,4 +1,5 @@
-use gitar::{FretboardDiagram, Key, Luthier, Mode, Note};
+use gitar::{FretboardDiagram, Luthier};
+use minstrel::{Key, Mode, Note};
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -67,7 +68,7 @@ fn main() -> anyhow::Result<()> {
             println!("{:#}", key);
         }
         Opt::Key { notes, root_note } => {
-            let key_candidates = gitar::guess_key(notes, root_note);
+            let key_candidates = minstrel::guess_key(notes, root_note);
             match key_candidates.len() {
                 0 => {
                     println!("No candidates.");

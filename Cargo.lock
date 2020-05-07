@@ -74,6 +74,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "arrayvec 0.5.1",
+ "minstrel",
  "nom",
  "structopt",
  "strum",
@@ -129,6 +130,19 @@ name = "memchr"
 version = "2.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3728d817d99e5ac407411fa471ff9800a778d88a24685968b36824eaf4bee400"
+
+[[package]]
+name = "minstrel"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "61e0996af4edc2c4062a7b6516158726a931fc27b524936b075a95f5f19e8be6"
+dependencies = [
+ "anyhow",
+ "arrayvec 0.5.1",
+ "nom",
+ "strum",
+ "strum_macros",
+]
 
 [[package]]
 name = "nodrop"

@@ -1,4 +1,4 @@
-use crate::{Interval, Note};
+use minstrel::{Interval, Note};
 use std::{fmt, str::FromStr};
 
 pub struct Luthier {

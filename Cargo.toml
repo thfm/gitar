@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 anyhow = "1.0"
 arrayvec = "0.5"
+minstrel = "0.1"
 nom = "5.1"
 structopt = "0.3"
 strum = "0.18"
