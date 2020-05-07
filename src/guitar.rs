@@ -64,14 +64,6 @@ pub struct Guitar {
 }
 
 impl Guitar {
-    /// Creates a new guitar.
-    pub fn new(num_frets: usize) -> Self {
-        Self {
-            num_frets,
-            strings: Vec::new(),
-        }
-    }
-
     /// Returns the fretboard locations of the given note.
     pub fn locations(&self, note: Note) -> Vec<FretboardLocation> {
         let mut locations = Vec::new();
