@@ -23,6 +23,7 @@ enum Opt {
         #[structopt(short = "m", long = "mode")]
         mode: Option<Mode>,
     },
+    /// Prints possible keys to which the given notes belong.
     Key {
         notes: Vec<Note>,
         #[structopt(short = "r", long = "root")]

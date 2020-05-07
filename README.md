@@ -16,9 +16,9 @@ $ cargo install --path . --force
 
 ## A note regarding note input
 
-Currently, `gitar` only has one command (`find`); but functionality for note input will likely be the same for future commands as well. Thus, it is covered here once for convenience.
+Functionality for note input is common between commands; thus, it is covered here once for convenience.
 
-You only need to supply a name when inputting notes, but can optionally specify an octave number as well (the default for which is 0):
+You only need to supply a name when inputting notes, but can optionally specify an octave number as well (for situations where it matters):
 
 * note names must be one of the following (case-sensitive): `C`, `Db`, `D`, `Eb`, `E`, `F`, `Gb`, `G`, `Ab`, `A`, `Bb`, `B`
 
@@ -91,7 +91,6 @@ $ gitar find Gb1 --tuning E1 A1 D2 G2
 ∗│││ 2
 ```
 
-
 #### Adding a `capo`
 
 You can add a capo by specifying the fret that you want it to be placed on after the `capo` option:
@@ -143,7 +142,7 @@ $ gitar find F4 -f 18
 
 ### `notes`
 
-The `notes` command outputs the notes in a given key. You use it like this:
+The `notes` command simply outputs the notes in a given key. You use it like this:
 
 ```console
 $ gitar notes C
@@ -155,4 +154,36 @@ The default mode is ionian, but you can easily change that using the `mode` opti
 ```console
 $ gitar notes Eb --mode Aeolian
 Eb F Gb Ab Bb B Db
+```
+
+### `key`
+
+`key` is essentially the opposite of `notes`: you give it a list of notes, and it outputs possible keys (called 'candidates') to which they belong:
+
+```console
+$ gitar key C D E F A
+14 candidates:
+C Ionian (C D E F G A B)
+C Lydian (C D E F G A Bb)
+D Dorian (D E F G A B C)
+D Aeolian (D E F G A Bb C)
+E Phrygian (E F G A B C D)
+E Locrian (E F G A Bb C D)
+F Ionian (F G A Bb C D E)
+F Mixolydian (F G A B C D E)
+G Dorian (G A Bb C D E F)
+G Lydian (G A B C D E F)
+A Phrygian (A Bb C D E F G)
+A Aeolian (A B C D E F G)
+Bb Mixolydian (Bb C D E F G A)
+B Locrian (B C D E F G A)
+```
+
+You can filter candidates by their root note with the `root` option:
+
+```console
+$ gitar key C D E F A --root D
+2 candidates:
+D Dorian (D E F G A B C)  
+D Aeolian (D E F G A Bb C)
 ```
