@@ -1,10 +1,13 @@
 use crate::{Interval, Note, SEMITONE, TONE};
 use arrayvec::ArrayVec;
 use std::fmt;
-use strum_macros::EnumString;
+use strum::IntoEnumIterator;
+use strum_macros::{Display as EnumDisplay, EnumIter, EnumString};
 
+#[derive(Copy, Clone)]
 pub struct Key {
     notes: [Note; 7],
+    mode: Mode,
 }
 
 impl Key {
@@ -18,7 +21,15 @@ impl Key {
 
         Self {
             notes: notes.into_inner().unwrap(),
+            mode,
         }
+    }
+
+    fn notes_disregarding_octave(mut self) -> [Note; 7] {
+        for note in &mut self.notes {
+            *note = note.disregard_octave();
+        }
+        self.notes
     }
 }
 
@@ -54,17 +65,21 @@ fn construction() {
 
 impl fmt::Display for Key {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let num_notes = self.notes.len();
-        for (i, note) in self.notes.iter().enumerate() {
-            write!(f, "{:#}", note)?;
-            // Only prints a space if this is not the final note
-            // (to avoid having a trailing space)
-            if i != num_notes - 1 {
-                f.write_str(" ")?;
+        if f.alternate() {
+            let num_notes = self.notes.len();
+            for (i, note) in self.notes.iter().enumerate() {
+                write!(f, "{:#}", note)?;
+                // Only prints a space if this is not the final note
+                // (to avoid having a trailing space)
+                if i != num_notes - 1 {
+                    f.write_str(" ")?;
+                }
             }
-        }
 
-        Ok(())
+            Ok(())
+        } else {
+            write!(f, "{:#} {}", self.notes[0], self.mode)
+        }
     }
 }
 
@@ -84,7 +99,31 @@ fn display() {
     );
 }
 
-#[derive(EnumString)]
+pub fn guess_key(notes: Vec<Note>, root_note: Option<Note>) -> Vec<Key> {
+    let key_filter = |root_note, key_candidates: &mut Vec<_>| {
+        for mode in Mode::iter() {
+            let key = Key::new(root_note, mode);
+            if notes
+                .iter()
+                .all(|note| key.notes_disregarding_octave().contains(note))
+            {
+                key_candidates.push(key);
+            }
+        }
+    };
+
+    let mut key_candidates = Vec::new();
+    if let Some(root_note) = root_note {
+        key_filter(root_note, &mut key_candidates);
+    } else {
+        for root_note in Note::new(0).into_iter().take(12) {
+            key_filter(root_note, &mut key_candidates);
+        }
+    }
+    key_candidates
+}
+
+#[derive(EnumString, EnumIter, EnumDisplay, Debug, Copy, Clone)]
 pub enum Mode {
     Ionian,
     Dorian,
@@ -97,7 +136,7 @@ pub enum Mode {
 
 impl IntoIterator for Mode {
     type Item = Interval;
-    type IntoIter = ModeIter;
+    type IntoIter = ModeIntervalIter;
 
     fn into_iter(self) -> Self::IntoIter {
         Self::IntoIter {
@@ -115,12 +154,12 @@ impl IntoIterator for Mode {
     }
 }
 
-pub struct ModeIter {
+pub struct ModeIntervalIter {
     intervals: [Interval; 6],
     index: usize,
 }
 
-impl Iterator for ModeIter {
+impl Iterator for ModeIntervalIter {
     type Item = Interval;
 
     fn next(&mut self) -> Option<Self::Item> {

@@ -1,4 +1,4 @@
-use gitar::{standard_tuning, FretboardDiagram, Key, Luthier, Mode, Note};
+use gitar::{FretboardDiagram, Key, Luthier, Mode, Note};
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -23,6 +23,11 @@ enum Opt {
         #[structopt(short = "m", long = "mode")]
         mode: Option<Mode>,
     },
+    Key {
+        notes: Vec<Note>,
+        #[structopt(short = "r", long = "root")]
+        root_note: Option<Note>,
+    },
 }
 
 fn main() -> anyhow::Result<()> {
@@ -36,7 +41,7 @@ fn main() -> anyhow::Result<()> {
         } => {
             // Uses standard tuning if there was no given tuning (or if the given
             // tuning was invalid)
-            let tuning = tuning.unwrap_or_else(standard_tuning);
+            let tuning = tuning.unwrap_or_else(gitar::standard_tuning);
 
             let capo = capo.unwrap_or(0);
 
@@ -58,7 +63,21 @@ fn main() -> anyhow::Result<()> {
         Opt::Notes { root_note, mode } => {
             let mode = mode.unwrap_or(Mode::Ionian);
             let key = Key::new(root_note, mode);
-            println!("{}", key);
+            println!("{:#}", key);
+        }
+        Opt::Key { notes, root_note } => {
+            let key_candidates = gitar::guess_key(notes, root_note);
+            match key_candidates.len() {
+                0 => {
+                    println!("No candidates.");
+                    return Ok(());
+                }
+                1 => println!("1 candidate:"),
+                n => println!("{} candidates:", n),
+            }
+            for key_candidate in key_candidates {
+                println!("{0} ({0:#})", key_candidate);
+            }
         }
     }
 

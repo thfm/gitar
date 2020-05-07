@@ -16,6 +16,12 @@ impl Note {
     pub fn new(value: usize) -> Self {
         Note { value }
     }
+
+    pub(crate) fn disregard_octave(&self) -> Self {
+        Self {
+            value: self.value % 12,
+        }
+    }
 }
 
 impl FromStr for Note {
