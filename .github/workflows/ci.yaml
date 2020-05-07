@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   check_fmt:
-    name: fmt ${{ github.sha }}
+    name: fmt
     runs-on: ubuntu-latest
 
     steps:
