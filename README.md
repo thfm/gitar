@@ -156,9 +156,9 @@ $ gitar notes Eb --mode Aeolian
 Eb F Gb Ab Bb B Db
 ```
 
-### `key`
+### `keys`
 
-`key` is essentially the opposite of `notes`: you give it a list of notes, and it outputs possible keys (called 'candidates') to which they belong:
+`keys` is essentially the opposite of `notes`: you give it a list of notes, and it outputs possible keys (called 'candidates') to which they belong:
 
 ```console
 $ gitar key C D E F A

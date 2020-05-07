@@ -25,7 +25,7 @@ enum Opt {
         mode: Option<Mode>,
     },
     /// Prints possible keys to which the given notes belong.
-    Key {
+    Keys {
         notes: Vec<Note>,
         #[structopt(short = "r", long = "root")]
         root_note: Option<Note>,
@@ -67,7 +67,7 @@ fn main() -> anyhow::Result<()> {
             let key = Key::new(root_note, mode);
             println!("{:#}", key);
         }
-        Opt::Key { notes, root_note } => {
+        Opt::Keys { notes, root_note } => {
             let key_candidates = minstrel::guess_key(notes, root_note);
             match key_candidates.len() {
                 0 => {
