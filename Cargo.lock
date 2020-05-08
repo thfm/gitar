@@ -133,9 +133,9 @@ checksum = "3728d817d99e5ac407411fa471ff9800a778d88a24685968b36824eaf4bee400"
 
 [[package]]
 name = "minstrel"
-version = "0.1.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6cf5870b190ee8a6db8e4212a9cb0c4ee3a29608bc8fff5522fe41771f9f5006"
+checksum = "cee06a4d1093378b0e26b8d0dba09ba56876a449ce671ee607161cfd4a31da8d"
 dependencies = [
  "anyhow",
  "arrayvec 0.5.1",
