@@ -1,6 +1,6 @@
 [package]
 name = "gitar"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Thomas Freeman <tomclaudefreeman@gmail.com>"]
 edition = "2018"
 description = "A command-line tool for programmer-guitarists."

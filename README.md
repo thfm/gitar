@@ -9,9 +9,7 @@ A command-line tool for programmer-guitarists.
 Note: you will need Rust on your machine in order to use this tool. If you don't, you can visit https://rustup.rs/ to install it.
 
 ```console
-$ git clone https://github.com/thfm/gitar.git
-$ cd gitar
-$ cargo install --path . --force
+$ cargo install gitar --force
 ```
 
 ## A note regarding note input
